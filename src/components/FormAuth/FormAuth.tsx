@@ -4,12 +4,12 @@ import { useForm } from "react-hook-form";
 import logo from "../../images/3646420.png";
 import { login } from "../../services/redusers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../services/store";
+import { RootState, AppDispatch } from "../../services/store";
 import { Form } from "../Form/Form";
 import { Loader } from "../Loader/Loader";
 
 export const FormAuth: FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const error = useSelector((state: RootState) => state.auth.error);
   const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const {
@@ -55,7 +55,7 @@ export const FormAuth: FC = () => {
     }
   };
 
-  const handleShowPassword = (evt) => {
+  const handleShowPassword = (evt: React.MouseEvent) => {
     evt.preventDefault();
     setShowPass(!showPass);
   };

@@ -1,6 +1,14 @@
-import { FC } from "react";
+import { FormEvent, ReactNode } from "react";
+import { FieldErrors, FieldValues } from "react-hook-form";
 
-export const Form: FC = ({ child, buttonTitle, onSubmit, err }) => {
+
+interface LayoutProps  { 
+  child: ReactNode,
+  buttonTitle: string,
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void,
+  err: FieldErrors<FieldValues>
+}
+export const Form = ({ child, buttonTitle, onSubmit, err }: LayoutProps) => {
   const disabled = err !== undefined && Object.keys(err).length !== 0;
   const buttonSubmitClassName = `form-auth__button_submit ${
     disabled ? "form-auth__button_submit_disabled" : ""

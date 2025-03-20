@@ -7,7 +7,7 @@ import {
   deleteData,
   updateData,
 } from "../../services/redusers/dataSlice";
-import { RootState } from "../../services/store";
+import { RootState, AppDispatch } from "../../services/store";
 import { dataItem } from "../../services/redusers/dataSlice";
 import { Modal } from "../Modal/Modal";
 import { Loader } from "../Loader/Loader";
@@ -16,8 +16,7 @@ export const Table: FC = () => {
   const data = useSelector((state: RootState) => state.data.data);
   const isLoading = useSelector((state: RootState) => state.data.isLoading);
   const error = useSelector((state: RootState) => state.data.error);
-  console.log(error)
-  const dispatch = useDispatch();
+  const dispatch : AppDispatch = useDispatch();
   const token: string | null = localStorage.getItem("auth-token");
 
   const [isModalOpen, setIsModalOpen] = useState(false);

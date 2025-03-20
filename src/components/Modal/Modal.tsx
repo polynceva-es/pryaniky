@@ -1,19 +1,36 @@
-import { FC } from "react";
 import "./Modal.css";
 import { Form } from "../Form/Form";
 import { RootState } from "../../services/store";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
+import { dataItem } from "../../services/redusers/dataSlice";
 
-export const Modal: FC = ({
+interface dataItemWithoutId {
+  companySigDate: string, //ISO
+  companySignatureName: string,
+  documentName: string,
+  documentStatus: string,
+  documentType: string,
+  employeeNumber: string,
+  employeeSigDate: string, //ISO
+  employeeSignatureName: string,
+}
+
+interface LayoutProps  { 
+  element: dataItem,
+  handleToggleModal: () => void,
+  handleUpdateData: (values: dataItemWithoutId, id: string) => void,
+  handleAddNewData: (values: dataItemWithoutId) => void
+}
+
+export const Modal = ({
   element,
   handleToggleModal,
   handleUpdateData,
   handleAddNewData,
-}) => {
+}: LayoutProps) => {
   const error = useSelector((state: RootState) => state.auth.error);
   const {
-    watch,
     register,
     handleSubmit,
     reset,
@@ -28,18 +45,6 @@ export const Modal: FC = ({
     employeeSigDate: element ? new Date(element.employeeSigDate).toISOString().substring(0, 16) : '',
     employeeSignatureName: element ? element.employeeSignatureName : ''
   },});
-  const watchAllFields = watch();
-
-  const formAuthInputClassName = (name: string) => {
-    return `form-auth__input ${
-      errors[name]?.message ? "form-auth__input_err" : ""
-    } ${
-      watchAllFields[name]?.length > 0 && errors[name]?.message === undefined
-        ? "form-auth__input_ok"
-        : ""
-    }`;
-  };
-
   return (
     <section className="modal">
       <button className="button modal__btn-close" onClick={() => handleToggleModal()}></button>
@@ -49,7 +54,7 @@ export const Modal: FC = ({
             <label htmlFor="companySigDate" className="form-auth__label">
               Дата подписания компанией
               <input
-                className={formAuthInputClassName("companySigDate")}
+                className='form-auth__input'
                 id="companySigDate"
                 type="datetime-local"
                 required
@@ -59,7 +64,7 @@ export const Modal: FC = ({
             <label htmlFor="companySignatureName" className="form-auth__label">
               Имя файла подписи компании
               <input
-                className={formAuthInputClassName("companySignatureName")}
+                className='form-auth__input'
                 id="companySignatureName"
                 type="text"
                 required
@@ -69,7 +74,7 @@ export const Modal: FC = ({
             <label htmlFor="documentName" className="form-auth__label">
               Документ
               <input
-                className={formAuthInputClassName("documentName")}
+                className='form-auth__input'
                 id="documentName"
                 type="text"
                 required
@@ -79,7 +84,7 @@ export const Modal: FC = ({
             <label htmlFor="documentStatus" className="form-auth__label">
               Статус
               <input
-                className={formAuthInputClassName("documentStatus")}
+                className='form-auth__input'
                 id="documentStatus"
                 type="text"
                 required
@@ -89,7 +94,7 @@ export const Modal: FC = ({
             <label htmlFor="documentType" className="form-auth__label">
               Тип
               <input
-                className={formAuthInputClassName("documentType")}
+                className='form-auth__input'
                 id="documentType"
                 type="text"
                 required
@@ -99,7 +104,7 @@ export const Modal: FC = ({
             <label htmlFor="employeeNumber" className="form-auth__label">
               Сотрудник
               <input
-                className={formAuthInputClassName("employeeNumber")}
+                className='form-auth__input'
                 id="employeeNumber"
                 type="text"
                 required
@@ -109,7 +114,7 @@ export const Modal: FC = ({
             <label htmlFor="employeeSigDate" className="form-auth__label">
               Дата подписания сотрудником
               <input
-                className={formAuthInputClassName("employeeSigDate")}
+                className='form-auth__input'
                 id="employeeSigDate"
                 type="datetime-local"
                 required
@@ -119,7 +124,7 @@ export const Modal: FC = ({
             <label htmlFor="employeeSignatureName" className="form-auth__label">
               Имя сотрудника
               <input
-                className={formAuthInputClassName("employeeSignatureName")}
+                className='form-auth__input'
                 id="employeeSignatureName"
                 type="text"
                 required

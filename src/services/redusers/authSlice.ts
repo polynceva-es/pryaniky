@@ -3,10 +3,15 @@ import { HOST } from "../../const/host";
 import { HEADERS } from "../../const/headers";
 
 
+interface loginProps {
+    login: string,
+    password: string
+}
+
 // Войти в аккаунт
 export const login = createAsyncThunk(
     "auth/login",
-    async ({ login, password }, { rejectWithValue }) => {
+    async ({ login, password }: loginProps, { rejectWithValue }) => {
         try {
             const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/login`, {
                 method: 'POST',
@@ -16,7 +21,6 @@ export const login = createAsyncThunk(
                     password: password
                 })
             })
-            //сделать другую проверку response.error_code = 0 if OK
             if (!response.ok) {
                 throw new Error(`Can't login`)
             } else {
@@ -54,17 +58,17 @@ const authSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(login.fulfilled, (state, action) => {
+            .addCase(login.fulfilled, (state) => {
                 state.isLoading = false;
                 state.isLogin = true;
             })
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(login.rejected, (state, action) => {
+            .addCase(login.rejected, (state) => {
                 state.isLoading = false;
                 state.isLogin = false;
-                state.error = action.payload.message;
+                state.error = 'Произошла ошибка авторизации';
             })
     },
 })

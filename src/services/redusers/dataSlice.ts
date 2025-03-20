@@ -2,106 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { HOST } from "../../const/host";
 import { HEADERS } from "../../const/headers";
 
-// Запрос для получения массива данных для таблицы (метод - GET)
-export const getData = createAsyncThunk(
-    "data/getData",
-    async (token: string, { rejectWithValue }) => {
-        try {
-            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/get`, {
-                method: 'GET',
-                headers: { ...HEADERS, "x-auth": token }
-            });
-            if (!response.ok) {
-                throw new Error(`Can't get data from server. Try later`)
-            } else {
-                const res = await response.json();
-                if (res.error_code !== 0) {
-                    throw new Error(res.error_code)
-                }
-                return res;
-            }
-        } catch (error) {
-            return rejectWithValue(error.message)
-        }
-    }
-)
-
-//Запрос для добавления записи (метод - POST)
-export const addData = createAsyncThunk(
-    "data/addData",
-    async ({ values, token }, { rejectWithValue }) => {
-        try {
-            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/create`, {
-                method: 'POST',
-                headers: { ...HEADERS, "x-auth": token },
-                body: JSON.stringify(values)
-            });
-            if (!response.ok) {
-                throw new Error(`Can't add data`);
-            } else {
-                const res = await response.json();
-                if (res.error_code !== 0) {
-                    throw new Error(res.error_code)
-                }
-                const newData = res.data;
-                return newData;
-            }
-        } catch (error) {
-            return rejectWithValue(error);
-        }
-    }
-)
-
-//Запрос для удаления записи(метод - POST)
-export const deleteData = createAsyncThunk(
-    "data/deleteData",
-    async ({ id, token }, { rejectWithValue }) => {
-        try {
-            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/delete/${id}`, {
-                method: 'POST',
-                headers: { ...HEADERS, "x-auth": token },
-            });
-            if (!response.ok) {
-                throw new Error(`Can't delete data`);
-            } else {
-                const res = await response.json();
-                if (res.error_code !== 0) {
-                    throw new Error(res.error_code)
-                }
-                return { res, id };
-            }
-        } catch (error) {
-            return rejectWithValue(error);
-        }
-    }
-)
-
-//Запрос для изменения записи(метод POST)
-export const updateData = createAsyncThunk(
-    "data/updateData",
-    async ({ values, id, token }, { rejectWithValue }) => {
-        console.log(values)
-        try {
-            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/set/${id}`, {
-                method: 'POST',
-                headers: { ...HEADERS, "x-auth": token },
-                body: JSON.stringify(values)
-            });
-            if (!response.ok) {
-                throw new Error(`Can't add data`);
-            } else {
-                const res = await response.json();
-                if (res.error_code !== 0) {
-                    throw new Error(res.error_code)
-                }
-                const updateData = res.data;
-                return updateData;
-            }
-        } catch (error) {
-            return rejectWithValue(error);
-        }
-    }
-)
 export interface dataItem {
     id: string,
     companySigDate: Date, //ISO
@@ -120,8 +20,125 @@ interface data {
     error: string
 }
 
+interface addDataProps {
+    values: dataItem,
+    token: string | null
+}
+interface deleteDataProps {
+    id: string,
+    token: string | null
+}
+interface updateDataProps {
+    values: dataItem,
+    id: string,
+    token: string | null
+}
 
 
+// Запрос для получения массива данных для таблицы (метод - GET)
+export const getData = createAsyncThunk(
+    "data/getData",
+    async (token: string | null, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/get`, {
+                method: 'GET',
+                headers: { ...HEADERS, "x-auth": token! }
+            });
+            if (!response.ok) {
+                throw new Error(`Can't get data from server. Try later`)
+            } else {
+                const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
+                return res;
+            }
+        } catch (error) {
+            if (error instanceof Error)
+            return rejectWithValue(error.message)
+        }
+    }
+)
+
+//Запрос для добавления записи (метод - POST)
+export const addData = createAsyncThunk(
+    "data/addData",
+    async ({ values, token }:addDataProps, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/create`, {
+                method: 'POST',
+                headers: { ...HEADERS, "x-auth": token! },
+                body: JSON.stringify(values)
+            });
+            if (!response.ok) {
+                throw new Error(`Can't add data`);
+            } else {
+                const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
+                const newData = res.data;
+                return newData;
+            }
+        } catch (error) {
+            if (error instanceof Error)
+            return rejectWithValue(error.message);
+        }
+    }
+)
+
+//Запрос для удаления записи(метод - POST)
+export const deleteData = createAsyncThunk(
+    "data/deleteData",
+    async ({ id, token }:deleteDataProps, { rejectWithValue }) => {
+        try {
+            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/delete/${id}`, {
+                method: 'POST',
+                headers: { ...HEADERS, "x-auth": token! },
+            });
+            if (!response.ok) {
+                throw new Error(`Can't delete data`);
+            } else {
+                const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
+                return { res, id };
+            }
+        } catch (error) {
+            if (error instanceof Error)
+            return rejectWithValue(error.message);
+        }
+    }
+)
+
+//Запрос для изменения записи(метод POST)
+export const updateData = createAsyncThunk(
+    "data/updateData",
+    async ({ values, id, token }: updateDataProps, { rejectWithValue }) => {
+        console.log(values)
+        try {
+            const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/set/${id}`, {
+                method: 'POST',
+                headers: { ...HEADERS, "x-auth": token! },
+                body: JSON.stringify(values)
+            });
+            if (!response.ok) {
+                throw new Error(`Can't add data`);
+            } else {
+                const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
+                const updateData = res.data;
+                return updateData;
+            }
+        } catch (error) {
+            if (error instanceof Error)
+            return rejectWithValue(error.message);
+        }
+    }
+)
 const initialState: data = {
     data: [],
     isLoading: false,
