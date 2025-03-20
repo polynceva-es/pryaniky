@@ -38,7 +38,8 @@ export const addData = createAsyncThunk(
                 throw new Error(`Can't add data`);
             } else {
                 const res = await response.json();
-                return res;
+                const newData = res.data;
+                return newData;
             }
         } catch (error) {
             return rejectWithValue(error);
@@ -60,7 +61,7 @@ export const deleteData = createAsyncThunk(
                 throw new Error(`Can't delete data`);
             } else {
                 const res = await response.json();
-                return {res, id};
+                return { res, id };
             }
         } catch (error) {
             return rejectWithValue(error);
@@ -84,7 +85,8 @@ export const updateData = createAsyncThunk(
                 throw new Error(`Can't add data`);
             } else {
                 const res = await response.json();
-                return res;
+                const updateData = res.data;
+                return updateData;
             }
         } catch (error) {
             return rejectWithValue(error);
@@ -126,46 +128,57 @@ const dataSlice = createSlice({
             //getData
             .addCase(getData.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = action.payload.data
+                state.data = action.payload.data;
+                state.error = '';
             })
-            .addCase(getData.pending, (state, action) => {
+            .addCase(getData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getData.rejected, (state, action) => {
+            .addCase(getData.rejected, (state) => {
                 state.isLoading = false;
+                state.error = 'На сервере произошла ошибка получения данных'
             })
 
             //addData
             .addCase(addData.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.data.push(action.payload);
+                state.error = '';
             })
-            .addCase(addData.pending, (state, action) => {
+            .addCase(addData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(addData.rejected, (state, action) => {
+            .addCase(addData.rejected, (state) => {
                 state.isLoading = false;
+                state.error = 'На сервере произошла ошибка добавления данных'
             })
 
             //deleteData
             .addCase(deleteData.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = state.data.filter((el)=> el.id !== action.payload.id );
+                state.data = state.data.filter((el) => el.id !== action.payload.id);
+                state.error = '';
             })
-            .addCase(deleteData.pending, (state, action) => {
+            .addCase(deleteData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(deleteData.rejected, (state, action) => {
+            .addCase(deleteData.rejected, (state) => {
                 state.isLoading = false;
+                state.error = 'На сервере произошла ошибка удаления данных'
             })
             //updateData
             .addCase(updateData.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.error = '';
+                state.data = state.data.filter((el) => el.id !== action.payload.id);
+                state.data.push(action.payload)
             })
-            .addCase(updateData.pending, (state, action) => {
+            .addCase(updateData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(updateData.rejected, (state, action) => {
+            .addCase(updateData.rejected, (state) => {
                 state.isLoading = false;
+                state.error = 'На сервере произошла ошибка обновления данных'
             })
     },
 })

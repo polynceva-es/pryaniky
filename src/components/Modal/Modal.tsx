@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
 export const Modal: FC = ({
-    element,
+  element,
   handleToggleModal,
   handleUpdateData,
   handleAddNewData,
@@ -40,7 +40,6 @@ export const Modal: FC = ({
     }`;
   };
 
-//   console.log(element)
   return (
     <section>
       <button className="modal__btn-close" onClick={() => handleToggleModal()}>
@@ -134,10 +133,10 @@ export const Modal: FC = ({
         buttonTitle={"Сохранить"}
         onSubmit={handleSubmit((values) => {
           if (element) {
-            // console.log({...values, id: element.id})
             handleUpdateData({...values, id: element.id}, element.id);
           } else handleAddNewData({...values});
           reset();
+          handleToggleModal()
         })}
         err={errors}
       />
