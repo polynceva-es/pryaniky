@@ -41,10 +41,8 @@ export const Modal: FC = ({
   };
 
   return (
-    <section>
-      <button className="modal__btn-close" onClick={() => handleToggleModal()}>
-        x
-      </button>
+    <section className="modal">
+      <button className="button modal__btn-close" onClick={() => handleToggleModal()}></button>
       <Form
         child={
           <>

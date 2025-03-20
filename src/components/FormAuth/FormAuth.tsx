@@ -6,10 +6,12 @@ import { login } from "../../services/redusers/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../services/store";
 import { Form } from "../Form/Form";
+import { Loader } from "../Loader/Loader";
 
 export const FormAuth: FC = () => {
   const dispatch = useDispatch();
   const error = useSelector((state: RootState) => state.auth.error);
+  const isLoading = useSelector((state: RootState) => state.auth.isLoading);
   const {
     watch,
     register,
@@ -58,7 +60,7 @@ export const FormAuth: FC = () => {
     setShowPass(!showPass);
   };
 
-  return (
+  return !isLoading ? (
     <div className="form-auth__container">
       <img src={logo} alt="logo" />
       <h1 className="form-auth__title">Добро пожаловать!</h1>
@@ -105,5 +107,5 @@ export const FormAuth: FC = () => {
       />
       <span>{error}</span>
     </div>
-  );
+  ) : (<Loader/>);
 };

@@ -15,16 +15,18 @@ export const getData = createAsyncThunk(
                 throw new Error(`Can't get data from server. Try later`)
             } else {
                 const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
                 return res;
             }
         } catch (error) {
-            return rejectWithValue(error)
+            return rejectWithValue(error.message)
         }
     }
 )
 
 //Запрос для добавления записи (метод - POST)
-// В случае успешного выполнения запроса ответ будет содержать созданную запись и иметь  HTTP STATUS CODE 200.
 export const addData = createAsyncThunk(
     "data/addData",
     async ({ values, token }, { rejectWithValue }) => {
@@ -38,6 +40,9 @@ export const addData = createAsyncThunk(
                 throw new Error(`Can't add data`);
             } else {
                 const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
                 const newData = res.data;
                 return newData;
             }
@@ -48,7 +53,6 @@ export const addData = createAsyncThunk(
 )
 
 //Запрос для удаления записи(метод - POST)
-// В случае успешного выполнения запроса в ответе свойство error_code будет иметь значение 0.
 export const deleteData = createAsyncThunk(
     "data/deleteData",
     async ({ id, token }, { rejectWithValue }) => {
@@ -61,6 +65,9 @@ export const deleteData = createAsyncThunk(
                 throw new Error(`Can't delete data`);
             } else {
                 const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
                 return { res, id };
             }
         } catch (error) {
@@ -70,7 +77,6 @@ export const deleteData = createAsyncThunk(
 )
 
 //Запрос для изменения записи(метод POST)
-// В случае успешного выполнения запроса в ответе свойство error_code будет иметь значение 0, а свойство data будет содержать измененный объект.
 export const updateData = createAsyncThunk(
     "data/updateData",
     async ({ values, id, token }, { rejectWithValue }) => {
@@ -85,6 +91,9 @@ export const updateData = createAsyncThunk(
                 throw new Error(`Can't add data`);
             } else {
                 const res = await response.json();
+                if (res.error_code !== 0) {
+                    throw new Error(res.error_code)
+                }
                 const updateData = res.data;
                 return updateData;
             }
@@ -134,9 +143,14 @@ const dataSlice = createSlice({
             .addCase(getData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(getData.rejected, (state) => {
+            .addCase(getData.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = 'На сервере произошла ошибка получения данных'
+                const error_code = action.payload;
+                if (error_code == 2004) {
+                    state.error = 'Произошла ошибка авторизации. Выйдете и авторизуйтесь заново'
+                } else {
+                    state.error = 'На сервере произошла ошибка получения данных'
+                }
             })
 
             //addData
@@ -148,9 +162,14 @@ const dataSlice = createSlice({
             .addCase(addData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(addData.rejected, (state) => {
+            .addCase(addData.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = 'На сервере произошла ошибка добавления данных'
+                const error_code = action.payload;
+                if (error_code == 2004) {
+                    state.error = 'Произошла ошибка авторизации. Выйдете и авторизуйтесь заново'
+                } else {
+                    state.error = 'На сервере произошла ошибка добавления данных'
+                }
             })
 
             //deleteData
@@ -162,9 +181,14 @@ const dataSlice = createSlice({
             .addCase(deleteData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(deleteData.rejected, (state) => {
+            .addCase(deleteData.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = 'На сервере произошла ошибка удаления данных'
+                const error_code = action.payload;
+                if (error_code == 2004) {
+                    state.error = 'Произошла ошибка авторизации. Выйдете и авторизуйтесь заново'
+                } else {
+                    state.error = 'На сервере произошла ошибка удаления данных'
+                }
             })
             //updateData
             .addCase(updateData.fulfilled, (state, action) => {
@@ -176,9 +200,14 @@ const dataSlice = createSlice({
             .addCase(updateData.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(updateData.rejected, (state) => {
+            .addCase(updateData.rejected, (state, action) => {
                 state.isLoading = false;
-                state.error = 'На сервере произошла ошибка обновления данных'
+                const error_code = action.payload;
+                if (error_code == 2004) {
+                    state.error = 'Произошла ошибка авторизации. Выйдете и авторизуйтесь заново'
+                } else {
+                    state.error = 'На сервере произошла ошибка обновления данных'
+                }
             })
     },
 })

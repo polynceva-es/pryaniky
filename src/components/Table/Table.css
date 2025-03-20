@@ -1,0 +1,28 @@
+.table__btn {
+    width: 30px;
+    height: 30px;
+}
+
+
+.table__btn_edit {
+    background-image: url(../../images/edit.svg);
+}
+
+.table__btn_delete {
+    background-image: url(../../images/delete.svg);
+}
+
+th, td {
+    border: 1px solid lightgrey;
+    text-align: start;
+    box-sizing: border-box;
+    padding: 0 5px;
+}
+
+th:last-of-type, td:last-of-type {
+    border: none;
+}
+
+table {
+    margin-top: 20px;
+}

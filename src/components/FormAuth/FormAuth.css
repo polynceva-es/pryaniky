@@ -3,7 +3,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
+  background-color: #FFF;
+  box-sizing: border-box;
+  padding: 20px;
+  border-radius: 4px;
 }
 
 .form-auth__container {

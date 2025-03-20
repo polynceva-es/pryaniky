@@ -30,11 +30,6 @@ export const login = createAsyncThunk(
     }
 )
 
-//Проверить токен на валидность
-//Запросить таблицу с невалидным токеном, если щлет лесом, выкидывать токен из локалсторедж и выдавать Вход
-
-
-
 interface auth {
     isLogin: boolean,
     isLoading: boolean,
@@ -51,7 +46,12 @@ const initialState: auth = {
 const authSlice = createSlice({
     name: "data",
     initialState,
-    reducers: {},
+    reducers: {
+        logOut: (state)=> {
+            localStorage.removeItem("auth-token");
+            state.isLogin = false;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(login.fulfilled, (state, action) => {
@@ -64,12 +64,11 @@ const authSlice = createSlice({
             .addCase(login.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isLogin = false;
-                console.log(action.payload)
                 state.error = action.payload.message;
             })
     },
 })
 
 
-// export const { } = createSlice.actions;
+export const { logOut } = authSlice.actions;
 export default authSlice.reducer;
