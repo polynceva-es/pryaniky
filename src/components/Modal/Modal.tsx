@@ -5,7 +5,12 @@ import { RootState } from "../../services/store";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
-export const Modal: FC = ({handleOpenModal}) => {
+export const Modal: FC = ({
+    element,
+  handleToggleModal,
+  handleUpdateData,
+  handleAddNewData,
+}) => {
   const error = useSelector((state: RootState) => state.auth.error);
   const {
     watch,
@@ -13,7 +18,16 @@ export const Modal: FC = ({handleOpenModal}) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({ mode: "onChange" });
+  } = useForm({ mode: "onChange",  defaultValues: {
+    companySigDate: element ? new Date(element.companySigDate).toISOString().substring(0, 16) : '',
+    companySignatureName: element ? element.companySignatureName : '',
+    documentName: element ? element.documentName : '',
+    documentStatus: element ? element.documentStatus : '',
+    documentType: element ? element.documentType : '',
+    employeeNumber: element ? element.employeeNumber : '',
+    employeeSigDate: element ? new Date(element.employeeSigDate).toISOString().substring(0, 16) : '',
+    employeeSignatureName: element ? element.employeeSignatureName : ''
+  },});
   const watchAllFields = watch();
 
   const formAuthInputClassName = (name: string) => {
@@ -25,9 +39,13 @@ export const Modal: FC = ({handleOpenModal}) => {
         : ""
     }`;
   };
+
+//   console.log(element)
   return (
     <section>
-      <button className="modal__btn-close" onClick={()=>handleOpenModal()}>x</button>
+      <button className="modal__btn-close" onClick={() => handleToggleModal()}>
+        x
+      </button>
       <Form
         child={
           <>
@@ -36,13 +54,13 @@ export const Modal: FC = ({handleOpenModal}) => {
               <input
                 className={formAuthInputClassName("companySigDate")}
                 id="companySigDate"
-                type="text"
+                type="datetime-local"
                 required
                 {...register("companySigDate")}
               />
             </label>
             <label htmlFor="companySignatureName" className="form-auth__label">
-              Компания
+              Имя файла подписи компании
               <input
                 className={formAuthInputClassName("companySignatureName")}
                 id="companySignatureName"
@@ -96,7 +114,7 @@ export const Modal: FC = ({handleOpenModal}) => {
               <input
                 className={formAuthInputClassName("employeeSigDate")}
                 id="employeeSigDate"
-                type="text"
+                type="datetime-local"
                 required
                 {...register("employeeSigDate")}
               />
@@ -115,8 +133,10 @@ export const Modal: FC = ({handleOpenModal}) => {
         }
         buttonTitle={"Сохранить"}
         onSubmit={handleSubmit((values) => {
-          // dispatch();
-          console.log(values)
+          if (element) {
+            // console.log({...values, id: element.id})
+            handleUpdateData({...values, id: element.id}, element.id);
+          } else handleAddNewData({...values});
           reset();
         })}
         err={errors}

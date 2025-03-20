@@ -24,17 +24,6 @@ export const getData = createAsyncThunk(
 )
 
 //Запрос для добавления записи (метод - POST)
-// Данные передаются в JSON формате:
-// { 
-//     "companySigDate": "2022-12-23T11:19:27.017Z\t", 
-//     "companySignatureName": "test", 
-//     "documentName": "test", 
-//     "documentStatus": "test", 
-//     "documentType": "test", 
-//     "employeeNumber": "test", 
-//     "employeeSigDate": "2022-12-23T11:19:27.017Z\t", 
-//     "employeeSignatureName": "test" 
-// }
 // В случае успешного выполнения запроса ответ будет содержать созданную запись и иметь  HTTP STATUS CODE 200.
 export const addData = createAsyncThunk(
     "data/addData",
@@ -43,7 +32,7 @@ export const addData = createAsyncThunk(
             const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/create`, {
                 method: 'POST',
                 headers: { ...HEADERS, "x-auth": token },
-                body: JSON.stringify({ values })
+                body: JSON.stringify(values)
             });
             if (!response.ok) {
                 throw new Error(`Can't add data`);
@@ -80,17 +69,16 @@ export const deleteData = createAsyncThunk(
 )
 
 //Запрос для изменения записи(метод POST)
-// Где id – это id записи, который получен с данными
-// Передаваемые данные аналогичны тем, что передаются при создании записи.
 // В случае успешного выполнения запроса в ответе свойство error_code будет иметь значение 0, а свойство data будет содержать измененный объект.
 export const updateData = createAsyncThunk(
     "data/updateData",
     async ({ values, id, token }, { rejectWithValue }) => {
+        console.log(values)
         try {
             const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/set/${id}`, {
                 method: 'POST',
                 headers: { ...HEADERS, "x-auth": token },
-                body: JSON.stringify({ values })
+                body: JSON.stringify(values)
             });
             if (!response.ok) {
                 throw new Error(`Can't add data`);
@@ -105,13 +93,13 @@ export const updateData = createAsyncThunk(
 )
 export interface dataItem {
     id: string,
-    companySigDate: string,
+    companySigDate: Date, //ISO
     companySignatureName: string,
     documentName: string,
     documentStatus: string,
     documentType: string,
     employeeNumber: string,
-    employeeSigDate: string,
+    employeeSigDate: Date, //ISO
     employeeSignatureName: string,
 }
 

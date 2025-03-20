@@ -13,28 +13,40 @@ import { Modal } from "./Modal/Modal";
 export const Table: FC = () => {
   const data = useSelector((state: RootState) => state.data.data);
   const dispatch = useDispatch();
-  const token = localStorage.getItem("auth-token");
+  const token: string | null = localStorage.getItem("auth-token");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [element, setElement] = useState(undefined)
 
-const handleOpenModal = () => {
+  const handleOpenModal = (element: dataItem | undefined): void => {
+    setElement(element);
+    handleToggleModal();
+  }
+
+  const handleToggleModal = (): void => {
     setIsModalOpen(!isModalOpen);
-}
+  }
 
-const handleDelete = (id: string) => {
-    console.log(id);
+  const handleDelete = (id: string) => {
     dispatch(deleteData({id, token}))
-}
+  }
 
-const handleAddNewData = (values: dataItem) => {
-dispatch(addData(values))
-}
+  const handleUpdateData = (values: dataItem, id: string) => {
+    // console.log(values)
+    dispatch(updateData({values, id, token}))
+    console.log('update')
+  }
+  const handleAddNewData = (values: dataItem) => {
+    dispatch(addData({values, token}))
+    console.log('add new')
+  }
 
   useEffect(() => {
     if (token) dispatch(getData(token));
   }, []);
   return (
     <>
+    <button onClick={()=>handleOpenModal(undefined)}>add new</button>
     <table>
         <tbody>
             <tr>
@@ -60,14 +72,15 @@ dispatch(addData(values))
                 <td>{el.employeeSigDate}</td>
                 <td>{el.employeeSignatureName}</td>
                 <td>
-                    <button onClick={handleOpenModal}>edit</button>
+                    <button onClick={()=>handleOpenModal(el)}>edit</button>
                     <button onClick={()=>handleDelete(el.id)}>delete</button>
                 </td>
             </tr>)
         })}
         </tbody>
     </table>
-    {isModalOpen ? (<Modal handleOpenModal={handleOpenModal}/>) : <></>}
+
+    {isModalOpen ? (<Modal element={element} handleToggleModal={handleToggleModal} handleUpdateData={handleUpdateData} handleAddNewData={handleAddNewData}/>) : <></>}
     </>
   );
 };
