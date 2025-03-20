@@ -2,15 +2,26 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { HOST } from "../../const/host";
 import { HEADERS } from "../../const/headers";
 
-export interface dataItem {
-    id: string,
-    companySigDate: Date, //ISO
+export interface dataItemWithoutId {
+    companySigDate: string, //ISO
     companySignatureName: string,
     documentName: string,
     documentStatus: string,
     documentType: string,
     employeeNumber: string,
-    employeeSigDate: Date, //ISO
+    employeeSigDate: string, //ISO
+    employeeSignatureName: string,
+  }
+
+export interface dataItem {
+    id: string,
+    companySigDate: string, //ISO
+    companySignatureName: string,
+    documentName: string,
+    documentStatus: string,
+    documentType: string,
+    employeeNumber: string,
+    employeeSigDate: string, //ISO
     employeeSignatureName: string,
 }
 
@@ -21,7 +32,7 @@ interface data {
 }
 
 interface addDataProps {
-    values: dataItem,
+    values: dataItemWithoutId,
     token: string | null
 }
 interface deleteDataProps {
@@ -29,7 +40,7 @@ interface deleteDataProps {
     token: string | null
 }
 interface updateDataProps {
-    values: dataItem,
+    values: dataItemWithoutId,
     id: string,
     token: string | null
 }
@@ -116,7 +127,6 @@ export const deleteData = createAsyncThunk(
 export const updateData = createAsyncThunk(
     "data/updateData",
     async ({ values, id, token }: updateDataProps, { rejectWithValue }) => {
-        console.log(values)
         try {
             const response = await fetch(`${HOST}/ru/data/v3/testmethods/docs/userdocs/set/${id}`, {
                 method: 'POST',
@@ -192,7 +202,7 @@ const dataSlice = createSlice({
             //deleteData
             .addCase(deleteData.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.data = state.data.filter((el) => el.id !== action.payload.id);
+                state.data = state.data.filter((el) => el.id !== action.payload!.id);
                 state.error = '';
             })
             .addCase(deleteData.pending, (state) => {

@@ -6,6 +6,7 @@ import {
   addData,
   deleteData,
   updateData,
+  dataItemWithoutId,
 } from "../../services/redusers/dataSlice";
 import { RootState, AppDispatch } from "../../services/store";
 import { dataItem } from "../../services/redusers/dataSlice";
@@ -20,7 +21,7 @@ export const Table: FC = () => {
   const token: string | null = localStorage.getItem("auth-token");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [element, setElement] = useState(undefined);
+  const [element, setElement] = useState<dataItem | undefined>(undefined);
 
   const handleOpenModal = (element: dataItem | undefined): void => {
     setElement(element);
@@ -35,13 +36,11 @@ export const Table: FC = () => {
     dispatch(deleteData({ id, token }));
   };
 
-  const handleUpdateData = (values: dataItem, id: string) => {
+  const handleUpdateData = (values: dataItemWithoutId, id: string) => {
     dispatch(updateData({ values, id, token }));
-    console.log("update");
   };
-  const handleAddNewData = (values: dataItem) => {
+  const handleAddNewData = (values: dataItemWithoutId) => {
     dispatch(addData({ values, token }));
-    console.log("add new");
   };
 
   useEffect(() => {
@@ -69,13 +68,13 @@ export const Table: FC = () => {
             {data.map((el) => {
               return (
                 <tr key={el.id}>
-                  <td>{el.companySigDate}</td>
+                  <td>{new Date(el.companySigDate).toLocaleString()}</td>
                   <td>{el.companySignatureName}</td>
                   <td>{el.documentName}</td>
                   <td>{el.documentStatus}</td>
                   <td>{el.documentType}</td>
                   <td>{el.employeeNumber}</td>
-                  <td>{el.employeeSigDate}</td>
+                  <td>{new Date(el.employeeSigDate).toLocaleString()}</td>
                   <td>{el.employeeSignatureName}</td>
                   <td>
                     <button

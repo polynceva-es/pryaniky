@@ -3,21 +3,10 @@ import { Form } from "../Form/Form";
 import { RootState } from "../../services/store";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { dataItem } from "../../services/redusers/dataSlice";
-
-interface dataItemWithoutId {
-  companySigDate: string, //ISO
-  companySignatureName: string,
-  documentName: string,
-  documentStatus: string,
-  documentType: string,
-  employeeNumber: string,
-  employeeSigDate: string, //ISO
-  employeeSignatureName: string,
-}
+import { dataItem, dataItemWithoutId } from "../../services/redusers/dataSlice";
 
 interface LayoutProps  { 
-  element: dataItem,
+  element: dataItem | undefined,
   handleToggleModal: () => void,
   handleUpdateData: (values: dataItemWithoutId, id: string) => void,
   handleAddNewData: (values: dataItemWithoutId) => void
@@ -136,7 +125,7 @@ export const Modal = ({
         buttonTitle={"Сохранить"}
         onSubmit={handleSubmit((values) => {
           if (element) {
-            handleUpdateData({...values, id: element.id}, element.id);
+            handleUpdateData({...values}, element.id);
           } else handleAddNewData({...values});
           reset();
           handleToggleModal()
