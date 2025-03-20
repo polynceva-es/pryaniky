@@ -1,0 +1,7 @@
+.modal__btn-close {
+    background-color: #AFFA00;
+    border-radius: 4px;
+    color: #0C1200;
+    border: none;
+    cursor: pointer;
+}

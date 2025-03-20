@@ -58,7 +58,6 @@ export const addData = createAsyncThunk(
 )
 
 //Запрос для удаления записи(метод - POST)
-// Где id – это id записи, который получен с данными
 // В случае успешного выполнения запроса в ответе свойство error_code будет иметь значение 0.
 export const deleteData = createAsyncThunk(
     "data/deleteData",
@@ -72,7 +71,7 @@ export const deleteData = createAsyncThunk(
                 throw new Error(`Can't delete data`);
             } else {
                 const res = await response.json();
-                return res;
+                return {res, id};
             }
         } catch (error) {
             return rejectWithValue(error);
@@ -104,7 +103,7 @@ export const updateData = createAsyncThunk(
         }
     }
 )
-interface dataItem {
+export interface dataItem {
     id: string,
     companySigDate: string,
     companySignatureName: string,
@@ -162,6 +161,7 @@ const dataSlice = createSlice({
             //deleteData
             .addCase(deleteData.fulfilled, (state, action) => {
                 state.isLoading = false;
+                state.data = state.data.filter((el)=> el.id !== action.payload.id );
             })
             .addCase(deleteData.pending, (state, action) => {
                 state.isLoading = true;
