@@ -123,6 +123,7 @@
   background: #FFF;
   font-family: 'Aneliza';
   font-feature-settings: 'ss01' on;
+  color: #0C1200;
 }
 
 .form-auth__input_err {

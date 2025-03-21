@@ -25,4 +25,6 @@ th:last-of-type, td:last-of-type {
 
 table {
     margin-top: 20px;
+    background-color: white;
+    color: black;
 }
